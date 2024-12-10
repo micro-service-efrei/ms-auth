@@ -1,0 +1,30 @@
+services:
+  # Service pour l'application Node.js (Express)
+  ms-auth:
+    image: node:20-alpine
+    container_name: ms-auth
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"  # Expose le port 3000 sur l'hôte
+    environment:
+      - PG_USER=postgres
+      - PG_PASSWORD=example_password
+      - PG_DATABASE=ms_auth
+      - PG_HOST=db
+      - PG_PORT=5432
+      - JWT_SECRET=secret_key
+    depends_on:
+      - db
+    command: ["npm", "start"]  # Commande pour démarrer votre application
+
+  # Service pour la base de données PostgreSQL
+  db:
+    image: postgres:17-alpine
+    container_name: ms-auth-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"  # Expose le port 5432 pour PostgreSQL
