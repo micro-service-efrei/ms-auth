@@ -4,17 +4,17 @@ services:
     image: node:20-alpine
     container_name: ms-auth
     working_dir: /app
-    volumes:
-      - .:/app
     ports:
       - "3000:3000"  # Expose le port 3000 sur l'hôte
+    volumes:
+      - .:/app
     environment:
-      - PG_USER=postgres
-      - PG_PASSWORD=example_password
-      - PG_DATABASE=ms_auth
-      - PG_HOST=db
-      - PG_PORT=5432
-      - JWT_SECRET=secret_key
+      - PG_USER=${PG_USER}
+      - PG_PASSWORD=${PG_PASSWORD}
+      - PG_DATABASE=${PG_DATABASE}
+      - PG_HOST=${PG_HOST}
+      - PG_PORT=${PG_PORT}
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - db
     command: ["npm", "start"]  # Commande pour démarrer votre application
