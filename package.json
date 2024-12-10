@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./src/index.js",
-    "migrate": "node-pg-migrate -m './src/migrations'"
+    "migrate": "node-pg-migrate -m ./src/migrations"
   },
   "keywords": [],
   "author": "",
