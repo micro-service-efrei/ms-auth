@@ -65,7 +65,12 @@ app.post('/login', async (req, res) => {
     }
 
     const token = generateToken(user);
-    res.json({ token });
+
+
+    // Ajouter le token dans l'en-tête HTTP
+    res.setHeader("Authorization", `Bearer ${token}`);
+
+    return res.status(200).json({ message: "Login successful" });
   } catch (error) {
     res.status(500).json({ error: 'Erreur lors de la connexion' });
   }
