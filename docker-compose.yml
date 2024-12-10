@@ -28,8 +28,8 @@ services:
     networks:
       - ms-network
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=${PG_USER}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
     ports:
       - "5432:5432"  # Expose le port 5432 pour PostgreSQL
 
