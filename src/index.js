@@ -6,6 +6,8 @@ const { Pool } = require("pg");
 const timeout = require("connect-timeout");
 const http = require("http");
 const WebSocket = require("ws");
+const swaggerUi = require("swagger-ui-express");
+const specs = require("./swagger");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -57,6 +59,39 @@ function haltOnTimedout(req, res, next) {
 app.get("/", (req, res) => {
   res.redirect("/ms-auth");
 });
+
+// Ajouter avant la configuration du router
+app.use("/ms-auth/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+
+/**
+ * @swagger
+ * /ms-auth/register:
+ *   post:
+ *     summary: Créer un nouvel utilisateur
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *               - role
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Utilisateur créé avec succès
+ *       400:
+ *         description: Données invalides
+ */
 
 // Configuration du router
 const router = express.Router();
@@ -153,6 +188,36 @@ router.post("/register", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /ms-auth/login:
+ *   post:
+ *     summary: Connexion utilisateur
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Connexion réussie
+ *         headers:
+ *           Authorization:
+ *             schema:
+ *               type: string
+ *             description: Bearer token JWT
+ */
+
 // Route pour la connexion des utilisateurs
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
@@ -208,6 +273,21 @@ const authenticateToken = (req, res, next) => {
 router.get("/protected", authenticateToken, (req, res) => {
   res.json({ message: "Accès autorisé", user: req.user });
 });
+
+/**
+ * @swagger
+ * /ms-auth/users/me:
+ *   get:
+ *     summary: Obtenir le profil de l'utilisateur connecté
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Profil utilisateur
+ *       401:
+ *         description: Non autorisé
+ */
 
 // Route pour récupérer le profil utilisateur
 router.get("/users/me", authenticateToken, async (req, res) => {
